@@ -1,2 +1,6 @@
-# Buoi5_5-9
-Bài tập buổi 5 ngày 5-9: Đặt 8 quân xe vào bàn cờ 8x8 bằng thuật toán BFS
+# Bài tập buổi 5 ngày 5/9
+Họ tên: Trương Hoài Chương MSSV: 23110081
+
+Lớp: ARIN330585_05CLC Buổi: Sáng thứ 2 - thứ 6, tiết 1 - 4
+
+Bài tập đặt 8 quân xe vào bàn cờ 8x8 bằng thuật toán BFS
