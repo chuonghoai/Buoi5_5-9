@@ -16,7 +16,6 @@ class eight_queen:
         self.frame_right = tk.Frame(self.root, bg="lightgray", relief="solid", borderwidth=1)
         self.frame_right.grid(row=0, column=1, padx=10, pady=10)
 
-        #Thêm 1 nút reset để đặt lại vị trí quân hậu và xe trên bàn cờ (chủ yếu làm cho vui)
         reset = tk.Button(self.root, text="Reset", width=8, height=1, font=("Arial", 12),
                           command=self.reset)
         reset.grid(row=1, column=0, columnspan=2, pady=5)
@@ -33,7 +32,6 @@ class eight_queen:
         
         self.img_null = tk.PhotoImage(width=1, height=1)
 
-        #Vòng while để đảm bảo có đặt được 8 quân hậu lên bàn cờ
         while True:
             self.queen_pos = [[0] * self.n for _ in range(self.n)]
             if self.set_queen(self.queen_pos, 0):
@@ -101,13 +99,10 @@ class eight_queen:
 
         return False
     
-    #Kiểm tra vị trí row, col có an toàn để đặt xe ko
     def x_is_safe(self, row, col):
-        #Kiểm tra vị trí có ở trong ma trận bàn cờ ko
         if row < 0 or row >= self.n or col < 0 or col >= self.n:
             return False
         
-        #Kiểm tra theo hàng ngang và dọc
         for i in range(self.n):
             if self.xa_pos[row][i] == 1:
                 return False
@@ -115,44 +110,27 @@ class eight_queen:
                 return False
         return True
     
-    #Hàm đặt xe lên bàn cờ
     def set_xa(self, xa_pos):
-        #Sinh ra vị trí đầu tiên để đặt xe
         x_start = random.randint(0, self.n - 1)
         y_start = random.randint(0, self.n - 1)
-        #Đánh dấu vị trí đã đặt xe
         xa_pos[x_start][y_start] = 1
         
-        #Tạo queue để chạy bfs
         q = deque([(x_start, y_start)])
-        #Các hướng có thể di chuyển để đặt xe
-        near = [[-1, -1], [-1, 1], [1, -1], [1, 1]]     #[trên trái, trên phải, dưới trái, dưới phải]
-        #Hàm đếm số xe dã đặt, ở đây là đã đặt 1 quân xe
+        near = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
         setted = 1
         
-        #Bắt đầu bfs
         while q and setted < 8:
-            #Lấy tọa độ của quân xe đầu tiên trong queue
             x, y = q.popleft()
-            #Từ tọa độ đã lấy di chuyển xung quanh ra 4 phía 
             for move in near:
-                #Tọa độ tiếp theo bằng cách lấy tọa độ hiện tại + hướng di chuyển
                 x_next, y_next = x + move[0], y + move[1]
-                #Mỗi lần sinh ra 1 tọa độ tiếp theo thì thêm vào queue để dự phòng cho các nước đi tiếp theo đặt xe
                 q.append((x_next, y_next))
-                #kiểm tra vị trí tiếp theo có an toàn ko
                 if self.x_is_safe(x_next, y_next):
-                    #nếu an toàn thì đánh dấu đặt xe và đánh dấu số quân xe đã đặt tăng lên 1
                     xa_pos[x_next][y_next] = 1
                     setted += 1
                     if setted == 8:
                         break
     
-    #đây là hàm reset (seset lại vị trí quân hậu và quân xe trên bàn cờ)
     def reset(self):
-        #Gồm 2 bước:
-        
-        #B1: Cài lại vị trí quân hậu và xe trong ma trận pos như ở hàm __init__
         while True:
             self.queen_pos = [[0] * self.n for _ in range(self.n)]
             if self.set_queen(self.queen_pos, 0):
@@ -161,20 +139,16 @@ class eight_queen:
         self.xa_pos = [[0] * self.n for _ in range(self.n)]
         self.set_xa(self.xa_pos)
         
-        #B2: Bắt đầu sửa lại vị trí hậu và xe trên giao diện
         for i in range(self.n):
             for j in range(self.n):
-                #Tạo biến color màu nền để tiện đối chiếu với hình ảnh quân cờ đen trắng
                 color = "white" if (i + j) % 2 == 0 else "black"
 
-                #nếu vị trí này trong ma trận pos có hậu thì sửa lại hình ảnh trên giao diện bằng hàm config
                 if self.queen_pos[i][j] == 1:
                     img = self.whiteQ if color == "black" else self.blackQ
-                    self.buttons_queen[i][j].config(image=img)  #config: sửa lại hình ảnh trên giao diện
+                    self.buttons_queen[i][j].config(image=img)
                 else:
                     self.buttons_queen[i][j].config(image=self.img_null)
                 
-                #Sửa hình ảnh quân xe tương tự như trên
                 if self.xa_pos[i][j] == 1:
                     img = self.whiteX if color == "black" else self.blackX
                     self.buttons_xa[i][j].config(image=img)
